@@ -1,10 +1,14 @@
+import React from 'react';
 import { Sparkles } from 'lucide-react';
 
-export default function SponsoredBadge() {
+const SponsoredBadge = React.forwardRef<HTMLSpanElement>((_, ref) => {
   return (
-    <span className="sponsored-badge" role="note" aria-label="Sponsored content">
+    <span ref={ref} className="sponsored-badge" role="note" aria-label="Sponsored content">
       <Sparkles size={10} />
       Sponsored
     </span>
   );
-}
+});
+
+SponsoredBadge.displayName = 'SponsoredBadge';
+export default SponsoredBadge;
