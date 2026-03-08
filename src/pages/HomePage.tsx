@@ -1,0 +1,119 @@
+import { Search, Bell, Plus, Video } from 'lucide-react';
+import { useState } from 'react';
+import HobbyCard from '@/components/HobbyCard';
+import SponsoredCard from '@/components/SponsoredCard';
+import MobileLayout from '@/components/MobileLayout';
+import hobbyTrains from '@/assets/hobby-trains.jpg';
+import hobbyForaging from '@/assets/hobby-foraging.jpg';
+import hobbyTypewriters from '@/assets/hobby-typewriters.jpg';
+import hobbyPottery from '@/assets/hobby-pottery.jpg';
+import hobbyBirdwatching from '@/assets/hobby-birdwatching.jpg';
+import hobbyStamps from '@/assets/hobby-stamps.jpg';
+
+const feedItems = [
+  { type: 'hobby' as const, image: hobbyTrains, title: 'Model Train Builders', description: 'Build, collect, and showcase miniature train landscapes with fellow enthusiasts.', members: 2340, isLive: true, viewers: 128 },
+  { type: 'sponsored' as const, title: 'Join the Model Train Expo 2026!', description: 'The biggest model train event of the year. Register now for early bird pricing.', brand: 'TrainWorld Co.', image: hobbyTrains },
+  { type: 'hobby' as const, image: hobbyForaging, title: 'Urban Foraging Network', description: 'Discover edible plants, mushrooms, and herbs growing in urban environments.', members: 1856, isLive: false },
+  { type: 'hobby' as const, image: hobbyTypewriters, title: 'Vintage Typewriter Collectors', description: 'Restore, trade, and celebrate the art of mechanical typing.', members: 978, isLive: true, viewers: 42 },
+  { type: 'hobby' as const, image: hobbyPottery, title: 'Ceramic Arts Circle', description: 'From wheel-throwing to glazing — share your pottery journey.', members: 3102, joined: true },
+  { type: 'sponsored' as const, title: 'Premium Pottery Tools — 20% Off', description: 'Handcrafted tools for serious ceramic artists. Use code NICHE20.', brand: 'ClayMaster', image: hobbyPottery },
+  { type: 'hobby' as const, image: hobbyBirdwatching, title: 'Birdwatching Adventures', description: 'Log sightings, share photos, and explore birding trails worldwide.', members: 4521 },
+  { type: 'hobby' as const, image: hobbyStamps, title: 'Philately Society', description: 'Trade rare stamps and learn about postal history from every era.', members: 1234 },
+];
+
+const upcomingEvents = [
+  { name: 'Train Expo Live', time: 'Today, 4:00 PM', isLive: true },
+  { name: 'Pottery Workshop', time: 'Tomorrow, 2:00 PM', isLive: false },
+  { name: 'Bird Count 2026', time: 'Mar 12, 8:00 AM', isLive: false },
+];
+
+export default function HomePage() {
+  const [fabOpen, setFabOpen] = useState(false);
+
+  return (
+    <MobileLayout>
+      {/* Header */}
+      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-lg px-4 pt-[env(safe-area-inset-top)] pb-2">
+        <div className="flex items-center justify-between pt-3 pb-2">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
+              <span className="text-primary font-heading font-bold text-sm">AJ</span>
+            </div>
+            <div>
+              <p className="text-muted-foreground text-[11px]">Welcome back</p>
+              <h1 className="font-heading font-bold text-foreground text-base leading-tight">Alex Johnson</h1>
+            </div>
+          </div>
+          <button className="relative w-9 h-9 rounded-full bg-muted flex items-center justify-center" aria-label="Notifications">
+            <Bell size={18} className="text-foreground" />
+            <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-live" />
+          </button>
+        </div>
+
+        {/* Search */}
+        <div className="relative mt-1">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="search"
+            placeholder="Search hobbies, groups, or events..."
+            className="w-full h-10 pl-9 pr-4 rounded-xl bg-muted text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            aria-label="Search hobbies"
+          />
+        </div>
+      </header>
+
+      <div className="px-4 pt-3 space-y-4">
+        {/* Upcoming Events */}
+        <section aria-label="Upcoming events">
+          <h2 className="font-heading font-semibold text-sm text-foreground mb-2.5">Upcoming Events</h2>
+          <div className="flex gap-2.5 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-hide">
+            {upcomingEvents.map((ev) => (
+              <div key={ev.name} className="flex-shrink-0 bg-card rounded-xl border border-border px-3.5 py-2.5 min-w-[160px]">
+                <div className="flex items-center gap-1.5 mb-1">
+                  {ev.isLive && <span className="live-badge text-[9px] px-1.5 py-0">LIVE</span>}
+                  <span className="text-muted-foreground text-[10px]">{ev.time}</span>
+                </div>
+                <p className="font-heading font-medium text-card-foreground text-xs">{ev.name}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Feed */}
+        <section aria-label="Your feed">
+          <h2 className="font-heading font-semibold text-sm text-foreground mb-2.5">Your Feed</h2>
+          <div className="space-y-3.5">
+            {feedItems.map((item, i) =>
+              item.type === 'sponsored' ? (
+                <SponsoredCard key={i} title={item.title} description={item.description!} brand={item.brand!} image={item.image!} />
+              ) : (
+                <HobbyCard key={i} {...item} />
+              )
+            )}
+          </div>
+        </section>
+      </div>
+
+      {/* FAB */}
+      <div className="fixed bottom-20 right-4 z-50">
+        {fabOpen && (
+          <div className="mb-3 space-y-2 animate-in slide-in-from-bottom-2 fade-in">
+            <button className="flex items-center gap-2 bg-card shadow-lg rounded-full px-4 py-2.5 text-sm font-medium text-foreground border border-border">
+              <Plus size={16} className="text-primary" /> New Group
+            </button>
+            <button className="flex items-center gap-2 bg-card shadow-lg rounded-full px-4 py-2.5 text-sm font-medium text-foreground border border-border">
+              <Video size={16} className="text-live" /> Go Live
+            </button>
+          </div>
+        )}
+        <button
+          onClick={() => setFabOpen(!fabOpen)}
+          className={`fab transition-transform ${fabOpen ? 'rotate-45' : ''}`}
+          aria-label="Create new"
+        >
+          <Plus size={24} />
+        </button>
+      </div>
+    </MobileLayout>
+  );
+}
