@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from '@/hooks/use-toast';
 import {
   ArrowLeft, Users, Heart, MessageCircle, Share2, DollarSign,
   MoreVertical, Volume2, VolumeX, Maximize, Minimize,
@@ -11,7 +12,15 @@ import hobbyTrains from '@/assets/hobby-trains.jpg';
 
 const reactions = ['❤️', '🔥', '👏', '🚂', '😍', '💯'];
 
-const liveChatMessages = [
+interface ChatMsg {
+  id: number;
+  user: string;
+  initials: string;
+  text: string;
+  time: string;
+}
+
+const initialLiveChat: ChatMsg[] = [
   { id: 1, user: 'Sarah M.', initials: 'SM', text: 'This layout is incredible!', time: '2s ago' },
   { id: 2, user: 'Jake R.', initials: 'JR', text: 'How did you get the bridge to curve like that? 🌉', time: '5s ago' },
   { id: 3, user: 'Priya K.', initials: 'PK', text: 'Can you zoom in on the station?', time: '12s ago' },
@@ -37,6 +46,9 @@ export default function LiveViewerPage() {
   const [showTipModal, setShowTipModal] = useState(false);
   const [showModTools, setShowModTools] = useState(false);
   const [chatMessage, setChatMessage] = useState('');
+  const [liked, setLiked] = useState(false);
+  const [selectedTip, setSelectedTip] = useState<string | null>(null);
+  const [liveChatMessages, setLiveChatMessages] = useState<ChatMsg[]>(initialLiveChat);
   const [floatingReactions, setFloatingReactions] = useState<{ id: number; emoji: string }[]>([]);
 
   const sendReaction = (emoji: string) => {
@@ -45,15 +57,32 @@ export default function LiveViewerPage() {
     setTimeout(() => setFloatingReactions(prev => prev.filter(r => r.id !== id)), 2000);
   };
 
+  const sendLiveChat = () => {
+    if (!chatMessage.trim()) return;
+    setLiveChatMessages(prev => [{
+      id: Date.now(),
+      user: 'You',
+      initials: 'AJ',
+      text: chatMessage.trim(),
+      time: 'now',
+    }, ...prev]);
+    setChatMessage('');
+  };
+
+  const handleTip = (amount: string) => {
+    setSelectedTip(amount);
+    toast({ title: `Tip sent! ${amount}`, description: 'Thank you for supporting the streamer!' });
+    setShowTipModal(false);
+    setSelectedTip(null);
+  };
+
   if (isFullscreen) {
     return (
       <div className="fixed inset-0 z-[100] bg-foreground">
-        {/* Fullscreen video */}
         <div className="relative w-full h-full">
           <img src={hobbyTrains} alt="Live stream" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-foreground/40" />
 
-          {/* Top bar */}
           <div className="absolute top-0 left-0 right-0 p-4 pt-[env(safe-area-inset-top)] flex items-center justify-between">
             <div className="flex items-center gap-3">
               <LiveBadge viewers={342} />
@@ -66,14 +95,12 @@ export default function LiveViewerPage() {
             </button>
           </div>
 
-          {/* Floating reactions */}
-          <div className="absolute right-4 bottom-32 space-y-2">
+          <div className="absolute right-4 bottom-32 space-y-2 pointer-events-none">
             {floatingReactions.map(r => (
               <div key={r.id} className="text-2xl animate-bounce">{r.emoji}</div>
             ))}
           </div>
 
-          {/* Bottom controls */}
           <div className="absolute bottom-0 left-0 right-0 p-4 pb-[env(safe-area-inset-bottom)]">
             {showChat && (
               <div className="mb-3 max-h-40 overflow-y-auto space-y-1.5">
@@ -115,7 +142,6 @@ export default function LiveViewerPage() {
           <img src={hobbyTrains} alt="Live stream — Model Train Builders competition" className="w-full aspect-video object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-foreground/50 via-transparent to-foreground/30" />
 
-          {/* Top controls */}
           <div className="absolute top-0 left-0 right-0 p-3 sm:p-4 pt-[env(safe-area-inset-top)] flex items-center justify-between">
             <button onClick={() => navigate(-1)} className="w-9 h-9 rounded-full bg-foreground/30 backdrop-blur-sm flex items-center justify-center" aria-label="Go back">
               <ArrowLeft size={18} className="text-primary-foreground" />
@@ -131,14 +157,12 @@ export default function LiveViewerPage() {
             </div>
           </div>
 
-          {/* Floating reactions overlay */}
           <div className="absolute right-3 bottom-16 space-y-1 pointer-events-none">
             {floatingReactions.map(r => (
               <div key={r.id} className="text-3xl animate-bounce">{r.emoji}</div>
             ))}
           </div>
 
-          {/* Volume & reactions bar on video */}
           <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between">
             <button onClick={() => setIsMuted(!isMuted)} className="w-9 h-9 rounded-full bg-foreground/30 backdrop-blur-sm flex items-center justify-center" aria-label={isMuted ? 'Unmute' : 'Mute'}>
               {isMuted ? <VolumeX size={16} className="text-primary-foreground" /> : <Volume2 size={16} className="text-primary-foreground" />}
@@ -158,19 +182,32 @@ export default function LiveViewerPage() {
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1 min-w-0">
               <h1 className="font-heading font-bold text-foreground text-lg sm:text-xl leading-tight">Model Train Building Competition</h1>
-              <p className="text-muted-foreground text-xs sm:text-sm mt-1">Hosted by <span className="text-primary font-medium">TrainMaster_Dave</span></p>
+              <p className="text-muted-foreground text-xs sm:text-sm mt-1">Hosted by <span className="text-primary font-medium cursor-pointer" onClick={() => toast({ title: 'TrainMaster_Dave', description: 'View host profile' })}>TrainMaster_Dave</span></p>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
-              <button className="w-9 h-9 rounded-full bg-muted flex items-center justify-center" aria-label="Like stream">
-                <Heart size={16} className="text-muted-foreground" />
+              <button
+                className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${liked ? 'bg-destructive/10' : 'bg-muted'}`}
+                aria-label="Like stream"
+                onClick={() => {
+                  setLiked(!liked);
+                  toast({ title: liked ? 'Unliked' : 'Liked!', description: liked ? 'Removed from favorites' : 'Added to favorites' });
+                }}
+              >
+                <Heart size={16} className={liked ? 'text-destructive fill-destructive' : 'text-muted-foreground'} />
               </button>
-              <button className="w-9 h-9 rounded-full bg-muted flex items-center justify-center" aria-label="Share stream">
+              <button
+                className="w-9 h-9 rounded-full bg-muted flex items-center justify-center"
+                aria-label="Share stream"
+                onClick={() => {
+                  navigator.clipboard.writeText(window.location.href);
+                  toast({ title: 'Link copied!', description: 'Stream link copied to clipboard' });
+                }}
+              >
                 <Share2 size={16} className="text-muted-foreground" />
               </button>
             </div>
           </div>
 
-          {/* Viewer avatars */}
           <div className="flex items-center gap-2 mt-3">
             <div className="flex -space-x-2">
               {viewerList.map(v => (
@@ -184,7 +221,6 @@ export default function LiveViewerPage() {
             </span>
           </div>
 
-          {/* Tip / Donate */}
           <button
             onClick={() => setShowTipModal(!showTipModal)}
             className="mt-3 w-full flex items-center justify-center gap-2 bg-sponsored/10 text-sponsored rounded-xl py-2.5 sm:py-3 text-sm font-semibold transition-colors hover:bg-sponsored/20"
@@ -192,7 +228,6 @@ export default function LiveViewerPage() {
             <DollarSign size={16} /> Tip the Streamer
           </button>
 
-          {/* Tip Modal */}
           {showTipModal && (
             <div className="mt-3 bg-card rounded-xl border border-border p-4 animate-in slide-in-from-bottom-2">
               <div className="flex items-center justify-between mb-3">
@@ -203,7 +238,15 @@ export default function LiveViewerPage() {
               </div>
               <div className="grid grid-cols-4 gap-2 mb-3">
                 {['$1', '$5', '$10', '$25'].map(amount => (
-                  <button key={amount} className="bg-muted hover:bg-primary hover:text-primary-foreground rounded-lg py-2 text-sm font-semibold text-foreground transition-colors">
+                  <button
+                    key={amount}
+                    onClick={() => handleTip(amount)}
+                    className={`rounded-lg py-2 text-sm font-semibold transition-colors ${
+                      selectedTip === amount
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted hover:bg-primary hover:text-primary-foreground text-foreground'
+                    }`}
+                  >
                     {amount}
                   </button>
                 ))}
@@ -214,9 +257,18 @@ export default function LiveViewerPage() {
                   type="number"
                   placeholder="Custom amount"
                   className="w-full h-10 pl-8 pr-4 rounded-xl bg-muted text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      const val = (e.target as HTMLInputElement).value;
+                      if (val) handleTip(`$${val}`);
+                    }
+                  }}
                 />
               </div>
-              <button className="mt-3 w-full bg-sponsored text-sponsored-foreground rounded-xl py-2.5 text-sm font-semibold">
+              <button
+                className="mt-3 w-full bg-sponsored text-sponsored-foreground rounded-xl py-2.5 text-sm font-semibold"
+                onClick={() => handleTip('$5')}
+              >
                 Send Tip
               </button>
             </div>
@@ -225,7 +277,10 @@ export default function LiveViewerPage() {
 
         {/* Sponsored Banner */}
         <div className="px-4 sm:px-6 py-3 border-b border-border">
-          <div className="flex items-center gap-3 bg-card rounded-xl border border-sponsored/20 p-3">
+          <div
+            className="flex items-center gap-3 bg-card rounded-xl border border-sponsored/20 p-3 cursor-pointer hover:shadow-sm transition-shadow"
+            onClick={() => toast({ title: 'TrainWorld Co.', description: 'Opening sponsor store...' })}
+          >
             <SponsoredBadge />
             <div className="flex-1 min-w-0">
               <p className="text-xs sm:text-sm font-medium text-card-foreground">TrainWorld Co. — Official Sponsor</p>
@@ -242,16 +297,28 @@ export default function LiveViewerPage() {
               <Shield size={14} className="text-primary" /> Moderation Tools
             </h3>
             <div className="grid grid-cols-2 gap-2">
-              <button className="flex items-center gap-2 bg-card rounded-lg border border-border p-2.5 text-xs text-foreground font-medium">
+              <button
+                onClick={() => toast({ title: 'Ban User', description: 'Select a user to ban from chat' })}
+                className="flex items-center gap-2 bg-card rounded-lg border border-border p-2.5 text-xs text-foreground font-medium hover:bg-muted transition-colors"
+              >
                 <UserX size={14} className="text-destructive" /> Ban User
               </button>
-              <button className="flex items-center gap-2 bg-card rounded-lg border border-border p-2.5 text-xs text-foreground font-medium">
+              <button
+                onClick={() => toast({ title: 'Flag Content', description: 'Content flagged for review' })}
+                className="flex items-center gap-2 bg-card rounded-lg border border-border p-2.5 text-xs text-foreground font-medium hover:bg-muted transition-colors"
+              >
                 <Flag size={14} className="text-sponsored" /> Flag Content
               </button>
-              <button className="flex items-center gap-2 bg-card rounded-lg border border-border p-2.5 text-xs text-foreground font-medium">
+              <button
+                onClick={() => toast({ title: 'Mute User', description: 'Select a user to mute' })}
+                className="flex items-center gap-2 bg-card rounded-lg border border-border p-2.5 text-xs text-foreground font-medium hover:bg-muted transition-colors"
+              >
                 <VolumeX size={14} className="text-muted-foreground" /> Mute User
               </button>
-              <button className="flex items-center gap-2 bg-card rounded-lg border border-border p-2.5 text-xs text-foreground font-medium">
+              <button
+                onClick={() => toast({ title: 'Slow Mode', description: 'Slow mode enabled — 10s between messages' })}
+                className="flex items-center gap-2 bg-card rounded-lg border border-border p-2.5 text-xs text-foreground font-medium hover:bg-muted transition-colors"
+              >
                 <Shield size={14} className="text-success" /> Slow Mode
               </button>
             </div>
@@ -283,11 +350,15 @@ export default function LiveViewerPage() {
           </div>
         </div>
 
-        {/* Chat Input — fixed at bottom */}
+        {/* Chat Input */}
         <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border z-50">
           <div className="max-w-2xl mx-auto px-4 sm:px-6 py-2.5 pb-[env(safe-area-inset-bottom)]">
             <div className="flex items-center gap-2">
-              <button className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground" aria-label="Emoji">
+              <button
+                className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground"
+                aria-label="Emoji"
+                onClick={() => toast({ title: 'Emoji Picker', description: 'Coming soon!' })}
+              >
                 <Smile size={18} />
               </button>
               <div className="flex-1 relative">
@@ -295,15 +366,24 @@ export default function LiveViewerPage() {
                   type="text"
                   value={chatMessage}
                   onChange={(e) => setChatMessage(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && sendLiveChat()}
                   placeholder="Say something..."
                   className="w-full h-9 sm:h-10 pl-3 pr-4 rounded-full bg-muted text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                   aria-label="Live chat message"
                 />
               </div>
-              <button className="w-9 h-9 rounded-full bg-primary flex items-center justify-center" aria-label="Send chat message">
+              <button
+                className="w-9 h-9 rounded-full bg-primary flex items-center justify-center"
+                aria-label="Send chat message"
+                onClick={sendLiveChat}
+              >
                 <Send size={16} className="text-primary-foreground" />
               </button>
-              <button onClick={() => setShowTipModal(true)} className="w-9 h-9 rounded-full bg-sponsored/20 flex items-center justify-center" aria-label="Tip streamer">
+              <button
+                onClick={() => setShowTipModal(true)}
+                className="w-9 h-9 rounded-full bg-sponsored/20 flex items-center justify-center"
+                aria-label="Tip streamer"
+              >
                 <DollarSign size={16} className="text-sponsored" />
               </button>
             </div>

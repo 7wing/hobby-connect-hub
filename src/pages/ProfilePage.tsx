@@ -1,6 +1,7 @@
 import { Settings, Edit3, Video, LogOut, MapPin, Calendar, Activity, Award, Sun, Moon, Monitor, ChevronRight, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { toast } from '@/hooks/use-toast';
 import MobileLayout from '@/components/MobileLayout';
 import SponsoredBadge from '@/components/SponsoredBadge';
 import { useTheme } from '@/hooks/useTheme';
@@ -45,7 +46,11 @@ export default function ProfilePage() {
       <header className="bg-gradient-to-b from-primary/10 to-background px-4 sm:px-6 pt-[env(safe-area-inset-top)]">
         <div className="flex items-center justify-between pt-3 pb-2">
           <h1 className="font-heading font-bold text-foreground text-xl sm:text-2xl">Profile</h1>
-          <button className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-muted flex items-center justify-center" aria-label="Settings">
+          <button
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-muted flex items-center justify-center"
+            aria-label="Settings"
+            onClick={() => toast({ title: 'Settings', description: 'Settings page coming soon!' })}
+          >
             <Settings size={18} className="text-foreground" />
           </button>
         </div>
@@ -70,7 +75,12 @@ export default function ProfilePage() {
 
       <div className="px-4 sm:px-6 space-y-5 pt-2">
         <div className="flex gap-2">
-          <Button variant="default" size="sm" className="flex-1 rounded-xl h-9 sm:h-10 gap-1.5">
+          <Button
+            variant="default"
+            size="sm"
+            className="flex-1 rounded-xl h-9 sm:h-10 gap-1.5"
+            onClick={() => toast({ title: 'Edit Profile', description: 'Profile editor coming soon!' })}
+          >
             <Edit3 size={14} /> Edit Profile
           </Button>
           <Button variant="outline" size="sm" className="flex-1 rounded-xl h-9 sm:h-10 gap-1.5" onClick={() => navigate('/live')}>
@@ -104,11 +114,20 @@ export default function ProfilePage() {
         <section aria-label="My hobbies">
           <div className="flex items-center justify-between mb-2">
             <h3 className="font-heading font-semibold text-sm sm:text-base text-foreground">My Hobbies</h3>
-            <button className="text-primary text-xs sm:text-sm font-medium">+ Add</button>
+            <button
+              className="text-primary text-xs sm:text-sm font-medium"
+              onClick={() => toast({ title: 'Add Hobby', description: 'Browse hobbies to add!', action: <button onClick={() => navigate('/explore')} className="text-primary text-xs font-medium">Explore</button> })}
+            >
+              + Add
+            </button>
           </div>
           <div className="flex flex-wrap gap-2">
             {myHobbies.map((h) => (
-              <span key={h.name} className="bg-accent text-accent-foreground px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium">
+              <span
+                key={h.name}
+                className="bg-accent text-accent-foreground px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium cursor-pointer hover:opacity-80 transition-opacity"
+                onClick={() => toast({ title: h.name, description: `You're a member of ${h.name}` })}
+              >
                 {h.emoji} {h.name}
               </span>
             ))}
@@ -118,13 +137,20 @@ export default function ProfilePage() {
         <section aria-label="Connections">
           <div className="flex items-center justify-between mb-2">
             <h3 className="font-heading font-semibold text-sm sm:text-base text-foreground">Connections</h3>
-            <button className="text-primary text-xs font-medium flex items-center gap-0.5">
+            <button
+              className="text-primary text-xs font-medium flex items-center gap-0.5"
+              onClick={() => toast({ title: 'All Connections', description: 'You have 48 connections' })}
+            >
               See all <ChevronRight size={12} />
             </button>
           </div>
           <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-1 scrollbar-hide">
             {connections.map((c) => (
-              <div key={c.name} className="flex flex-col items-center gap-1 flex-shrink-0">
+              <div
+                key={c.name}
+                className="flex flex-col items-center gap-1 flex-shrink-0 cursor-pointer"
+                onClick={() => toast({ title: c.name, description: c.online ? 'Online now' : 'Currently offline' })}
+              >
                 <div className="relative">
                   <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-muted flex items-center justify-center">
                     <span className="text-muted-foreground font-heading font-semibold text-xs sm:text-sm">{c.initials}</span>
@@ -141,7 +167,11 @@ export default function ProfilePage() {
           <h3 className="font-heading font-semibold text-sm sm:text-base text-foreground mb-2">Live History</h3>
           <div className="space-y-2.5">
             {liveHistory.map((stream) => (
-              <div key={stream.title} className="flex gap-3 bg-card rounded-xl border border-border p-2.5 sm:p-3">
+              <div
+                key={stream.title}
+                className="flex gap-3 bg-card rounded-xl border border-border p-2.5 sm:p-3 cursor-pointer hover:shadow-sm transition-shadow"
+                onClick={() => navigate('/live')}
+              >
                 <div className="relative w-20 sm:w-24 h-14 sm:h-16 rounded-lg overflow-hidden flex-shrink-0">
                   <img src={stream.image} alt={stream.title} className="w-full h-full object-cover" loading="lazy" />
                   <div className="absolute inset-0 bg-foreground/20 flex items-center justify-center">
@@ -165,7 +195,14 @@ export default function ProfilePage() {
           </div>
           <div className="space-y-2">
             {sponsoredDeals.map((deal) => (
-              <div key={deal.brand} className="bg-card rounded-xl border border-sponsored/20 p-3 flex items-center justify-between">
+              <div
+                key={deal.brand}
+                className="bg-card rounded-xl border border-sponsored/20 p-3 flex items-center justify-between cursor-pointer hover:shadow-sm transition-shadow"
+                onClick={() => {
+                  navigator.clipboard.writeText(deal.code);
+                  toast({ title: 'Code copied!', description: `${deal.code} copied to clipboard` });
+                }}
+              >
                 <div>
                   <p className="font-heading font-medium text-card-foreground text-xs sm:text-sm">{deal.brand}</p>
                   <p className="text-muted-foreground text-[10px] sm:text-[11px] mt-0.5">{deal.offer}</p>
@@ -201,7 +238,10 @@ export default function ProfilePage() {
           </div>
         </section>
 
-        <button className="w-full flex items-center justify-center gap-2 text-destructive text-sm font-medium py-3 mb-4">
+        <button
+          className="w-full flex items-center justify-center gap-2 text-destructive text-sm font-medium py-3 mb-4"
+          onClick={() => toast({ title: 'Logged out', description: 'You have been signed out.' })}
+        >
           <LogOut size={16} /> Log out
         </button>
       </div>
