@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { ArrowLeft, Phone, Video, Info, Send, Smile, Paperclip, Image, Radio, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import MobileLayout from '@/components/MobileLayout';
 import SponsoredBadge from '@/components/SponsoredBadge';
-import { useNavigate } from 'react-router-dom';
 
 interface Message {
   id: number;
@@ -39,8 +39,7 @@ export default function ChatPage() {
     const chat = chatList.find(c => c.name === activeChat);
     return (
       <MobileLayout>
-        {/* Chat thread header */}
-        <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-lg border-b border-border px-4 pt-[env(safe-area-inset-top)]">
+        <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-lg border-b border-border px-4 sm:px-6 pt-[env(safe-area-inset-top)]">
           <div className="flex items-center gap-3 py-2.5">
             <button onClick={() => setActiveChat(null)} aria-label="Back to chat list">
               <ArrowLeft size={20} className="text-foreground" />
@@ -69,11 +68,10 @@ export default function ChatPage() {
           </div>
         </header>
 
-        {/* Messages */}
-        <div className="px-4 py-3 space-y-3 min-h-[60vh]">
+        <div className="px-4 sm:px-6 py-3 space-y-3 min-h-[60vh]">
           {messages.map((msg) => (
             <div key={msg.id} className={`flex ${msg.isUser ? 'justify-end' : 'justify-start'}`}>
-              <div className="max-w-[78%]">
+              <div className="max-w-[78%] sm:max-w-[65%]">
                 <div className={msg.isUser ? 'chat-bubble-user' : 'chat-bubble-other'}>
                   <p className="text-sm leading-relaxed">{msg.text}</p>
                 </div>
@@ -86,26 +84,23 @@ export default function ChatPage() {
             </div>
           ))}
 
-          {/* Sponsored banner */}
           <div className="bg-card rounded-xl border border-sponsored/20 p-2.5 flex items-center gap-3 mt-4">
             <SponsoredBadge />
             <p className="text-[11px] text-muted-foreground flex-1">Check out TrainWorld's new HO scale collection!</p>
             <ChevronRight size={14} className="text-muted-foreground" />
           </div>
 
-          {/* Live invite */}
-          <div className="bg-primary/5 rounded-xl border border-primary/20 p-3 text-center">
+          <div className="bg-primary/5 rounded-xl border border-primary/20 p-3 sm:p-4 text-center">
             <Radio size={18} className="mx-auto text-primary mb-1" />
-            <p className="text-xs font-heading font-semibold text-foreground">Start a group live stream?</p>
-            <p className="text-[10px] text-muted-foreground mt-0.5">Invite {activeChat} to watch or co-host</p>
-            <button className="mt-2 bg-primary text-primary-foreground px-4 py-1.5 rounded-full text-xs font-medium">
+            <p className="text-xs sm:text-sm font-heading font-semibold text-foreground">Start a group live stream?</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">Invite {activeChat} to watch or co-host</p>
+            <button onClick={() => navigate('/live')} className="mt-2 bg-primary text-primary-foreground px-4 py-1.5 rounded-full text-xs font-medium">
               Go Live Together
             </button>
           </div>
         </div>
 
-        {/* Input */}
-        <div className="sticky bottom-16 bg-background border-t border-border px-3 py-2">
+        <div className="sticky bottom-16 bg-background border-t border-border px-3 sm:px-5 py-2">
           <div className="flex items-center gap-2">
             <button className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground" aria-label="Attach file">
               <Paperclip size={18} />
@@ -119,7 +114,7 @@ export default function ChatPage() {
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 placeholder="Type a message..."
-                className="w-full h-9 pl-3 pr-9 rounded-full bg-muted text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full h-9 sm:h-10 pl-3 pr-9 rounded-full bg-muted text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                 aria-label="Message input"
               />
               <button className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground" aria-label="Emoji picker">
@@ -137,14 +132,14 @@ export default function ChatPage() {
 
   return (
     <MobileLayout>
-      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-lg px-4 pt-[env(safe-area-inset-top)] pb-2">
+      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-lg px-4 sm:px-6 pt-[env(safe-area-inset-top)] pb-2">
         <div className="flex items-center justify-between pt-3 pb-2">
-          <h1 className="font-heading font-bold text-foreground text-xl">Messages</h1>
-          <button className="text-primary text-xs font-medium">New Chat</button>
+          <h1 className="font-heading font-bold text-foreground text-xl sm:text-2xl">Messages</h1>
+          <button className="text-primary text-xs sm:text-sm font-medium">New Chat</button>
         </div>
       </header>
 
-      <div className="px-4">
+      <div className="px-4 sm:px-6">
         <div className="space-y-0.5">
           {chatList.map((chat) => (
             <button
@@ -153,7 +148,7 @@ export default function ChatPage() {
               className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-muted/50 transition-colors text-left"
             >
               <div className="relative flex-shrink-0">
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-primary/10 flex items-center justify-center">
                   <span className="text-primary font-heading font-semibold text-sm">{chat.initials}</span>
                 </div>
                 {chat.online && <div className="online-dot absolute -bottom-0.5 -right-0.5" />}
@@ -168,7 +163,7 @@ export default function ChatPage() {
                   <p className="font-heading font-semibold text-foreground text-sm truncate">{chat.name}</p>
                   <span className="text-[10px] text-muted-foreground flex-shrink-0">{chat.time}</span>
                 </div>
-                <p className="text-xs text-muted-foreground truncate mt-0.5">{chat.lastMessage}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground truncate mt-0.5">{chat.lastMessage}</p>
               </div>
               {chat.unread > 0 && (
                 <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center flex-shrink-0">

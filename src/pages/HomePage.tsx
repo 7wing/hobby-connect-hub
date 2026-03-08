@@ -1,5 +1,6 @@
 import { Search, Bell, Plus, Video } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import HobbyCard from '@/components/HobbyCard';
 import SponsoredCard from '@/components/SponsoredCard';
 import MobileLayout from '@/components/MobileLayout';
@@ -29,22 +30,23 @@ const upcomingEvents = [
 
 export default function HomePage() {
   const [fabOpen, setFabOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <MobileLayout>
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-lg px-4 pt-[env(safe-area-inset-top)] pb-2">
+      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-lg px-4 sm:px-6 pt-[env(safe-area-inset-top)] pb-2">
         <div className="flex items-center justify-between pt-3 pb-2">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
               <span className="text-primary font-heading font-bold text-sm">AJ</span>
             </div>
             <div>
-              <p className="text-muted-foreground text-[11px]">Welcome back</p>
-              <h1 className="font-heading font-bold text-foreground text-base leading-tight">Alex Johnson</h1>
+              <p className="text-muted-foreground text-[11px] sm:text-xs">Welcome back</p>
+              <h1 className="font-heading font-bold text-foreground text-base sm:text-lg leading-tight">Alex Johnson</h1>
             </div>
           </div>
-          <button className="relative w-9 h-9 rounded-full bg-muted flex items-center justify-center" aria-label="Notifications">
+          <button className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-muted flex items-center justify-center" aria-label="Notifications">
             <Bell size={18} className="text-foreground" />
             <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-live" />
           </button>
@@ -56,24 +58,24 @@ export default function HomePage() {
           <input
             type="search"
             placeholder="Search hobbies, groups, or events..."
-            className="w-full h-10 pl-9 pr-4 rounded-xl bg-muted text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className="w-full h-10 sm:h-11 pl-9 pr-4 rounded-xl bg-muted text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             aria-label="Search hobbies"
           />
         </div>
       </header>
 
-      <div className="px-4 pt-3 space-y-4">
+      <div className="px-4 sm:px-6 pt-3 space-y-4 sm:space-y-5">
         {/* Upcoming Events */}
         <section aria-label="Upcoming events">
-          <h2 className="font-heading font-semibold text-sm text-foreground mb-2.5">Upcoming Events</h2>
+          <h2 className="font-heading font-semibold text-sm sm:text-base text-foreground mb-2.5">Upcoming Events</h2>
           <div className="flex gap-2.5 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-hide">
             {upcomingEvents.map((ev) => (
-              <div key={ev.name} className="flex-shrink-0 bg-card rounded-xl border border-border px-3.5 py-2.5 min-w-[160px]">
+              <div key={ev.name} className="flex-shrink-0 bg-card rounded-xl border border-border px-3.5 py-2.5 min-w-[160px] sm:min-w-[200px]">
                 <div className="flex items-center gap-1.5 mb-1">
                   {ev.isLive && <span className="live-badge text-[9px] px-1.5 py-0">LIVE</span>}
-                  <span className="text-muted-foreground text-[10px]">{ev.time}</span>
+                  <span className="text-muted-foreground text-[10px] sm:text-[11px]">{ev.time}</span>
                 </div>
-                <p className="font-heading font-medium text-card-foreground text-xs">{ev.name}</p>
+                <p className="font-heading font-medium text-card-foreground text-xs sm:text-sm">{ev.name}</p>
               </div>
             ))}
           </div>
@@ -81,8 +83,8 @@ export default function HomePage() {
 
         {/* Feed */}
         <section aria-label="Your feed">
-          <h2 className="font-heading font-semibold text-sm text-foreground mb-2.5">Your Feed</h2>
-          <div className="space-y-3.5">
+          <h2 className="font-heading font-semibold text-sm sm:text-base text-foreground mb-2.5">Your Feed</h2>
+          <div className="space-y-3.5 sm:space-y-4">
             {feedItems.map((item, i) =>
               item.type === 'sponsored' ? (
                 <SponsoredCard key={i} title={item.title} description={item.description!} brand={item.brand!} image={item.image!} />
@@ -95,13 +97,16 @@ export default function HomePage() {
       </div>
 
       {/* FAB */}
-      <div className="fixed bottom-20 right-4 z-50">
+      <div className="fixed bottom-20 right-4 sm:right-6 z-50">
         {fabOpen && (
           <div className="mb-3 space-y-2 animate-in slide-in-from-bottom-2 fade-in">
             <button className="flex items-center gap-2 bg-card shadow-lg rounded-full px-4 py-2.5 text-sm font-medium text-foreground border border-border">
               <Plus size={16} className="text-primary" /> New Group
             </button>
-            <button className="flex items-center gap-2 bg-card shadow-lg rounded-full px-4 py-2.5 text-sm font-medium text-foreground border border-border">
+            <button
+              onClick={() => { setFabOpen(false); navigate('/live'); }}
+              className="flex items-center gap-2 bg-card shadow-lg rounded-full px-4 py-2.5 text-sm font-medium text-foreground border border-border"
+            >
               <Video size={16} className="text-live" /> Go Live
             </button>
           </div>

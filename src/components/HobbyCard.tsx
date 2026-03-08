@@ -2,6 +2,7 @@ import { Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import LiveBadge from './LiveBadge';
 import SponsoredBadge from './SponsoredBadge';
+import { useNavigate } from 'react-router-dom';
 
 interface HobbyCardProps {
   image: string;
@@ -18,10 +19,12 @@ interface HobbyCardProps {
 export default function HobbyCard({
   image, title, description, members, isLive, viewers, isSponsored, sponsorName, joined
 }: HobbyCardProps) {
+  const navigate = useNavigate();
+
   return (
     <article className="hobby-card" aria-label={`${title} hobby group`}>
-      <div className="relative">
-        <img src={image} alt={title} className="w-full h-36 object-cover" loading="lazy" />
+      <div className="relative cursor-pointer" onClick={() => isLive && navigate('/live')}>
+        <img src={image} alt={title} className="w-full h-36 sm:h-44 object-cover" loading="lazy" />
         <div className="absolute top-2 left-2 flex gap-1.5">
           {isLive && <LiveBadge viewers={viewers} />}
         </div>
@@ -33,7 +36,7 @@ export default function HobbyCard({
       </div>
       <div className="p-3.5">
         <h3 className="font-heading font-semibold text-card-foreground text-[15px] leading-tight">{title}</h3>
-        <p className="text-muted-foreground text-xs mt-1 line-clamp-2">{description}</p>
+        <p className="text-muted-foreground text-xs sm:text-sm mt-1 line-clamp-2">{description}</p>
         {isSponsored && sponsorName && (
           <p className="text-sponsored text-[11px] font-medium mt-1.5">Sponsored by {sponsorName}</p>
         )}
