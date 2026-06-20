@@ -1,4 +1,4 @@
-import { Search, Bell, Plus, Video } from 'lucide-react';
+import { Search, Bell, Plus, BookOpen } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
@@ -13,20 +13,20 @@ import hobbyBirdwatching from '@/assets/hobby-birdwatching.jpg';
 import hobbyStamps from '@/assets/hobby-stamps.jpg';
 
 const allFeedItems = [
-  { type: 'hobby' as const, image: hobbyTrains, title: 'Model Train Builders', description: 'Build, collect, and showcase miniature train landscapes with fellow enthusiasts.', members: 2340, isLive: true, viewers: 128 },
+  { type: 'hobby' as const, id: '1', image: hobbyTrains, title: 'Model Train Builders', description: 'Build, collect, and showcase miniature train landscapes with fellow enthusiasts.', members: 2340 },
   { type: 'sponsored' as const, title: 'Join the Model Train Expo 2026!', description: 'The biggest model train event of the year. Register now for early bird pricing.', brand: 'TrainWorld Co.', image: hobbyTrains },
-  { type: 'hobby' as const, image: hobbyForaging, title: 'Urban Foraging Network', description: 'Discover edible plants, mushrooms, and herbs growing in urban environments.', members: 1856, isLive: false },
-  { type: 'hobby' as const, image: hobbyTypewriters, title: 'Vintage Typewriter Collectors', description: 'Restore, trade, and celebrate the art of mechanical typing.', members: 978, isLive: true, viewers: 42 },
-  { type: 'hobby' as const, image: hobbyPottery, title: 'Ceramic Arts Circle', description: 'From wheel-throwing to glazing — share your pottery journey.', members: 3102, joined: true },
+  { type: 'hobby' as const, id: '2', image: hobbyForaging, title: 'Urban Foraging Network', description: 'Discover edible plants, mushrooms, and herbs growing in urban environments.', members: 1856 },
+  { type: 'hobby' as const, id: '3', image: hobbyTypewriters, title: 'Vintage Typewriter Collectors', description: 'Restore, trade, and celebrate the art of mechanical typing.', members: 978 },
+  { type: 'hobby' as const, id: '4', image: hobbyPottery, title: 'Ceramic Arts Circle', description: 'From wheel-throwing to glazing — share your pottery journey.', members: 3102, joined: true },
   { type: 'sponsored' as const, title: 'Premium Pottery Tools — 20% Off', description: 'Handcrafted tools for serious ceramic artists. Use code NICHE20.', brand: 'ClayMaster', image: hobbyPottery },
-  { type: 'hobby' as const, image: hobbyBirdwatching, title: 'Birdwatching Adventures', description: 'Log sightings, share photos, and explore birding trails worldwide.', members: 4521 },
-  { type: 'hobby' as const, image: hobbyStamps, title: 'Philately Society', description: 'Trade rare stamps and learn about postal history from every era.', members: 1234 },
+  { type: 'hobby' as const, id: '5', image: hobbyBirdwatching, title: 'Birdwatching Adventures', description: 'Log sightings, share photos, and explore birding trails worldwide.', members: 4521 },
+  { type: 'hobby' as const, id: '6', image: hobbyStamps, title: 'Philately Society', description: 'Trade rare stamps and learn about postal history from every era.', members: 1234 },
 ];
 
-const upcomingEvents = [
-  { name: 'Train Expo Live', time: 'Today, 4:00 PM', isLive: true },
-  { name: 'Pottery Workshop', time: 'Tomorrow, 2:00 PM', isLive: false },
-  { name: 'Bird Count 2026', time: 'Mar 12, 8:00 AM', isLive: false },
+const upcomingClasses = [
+  { id: 1, title: 'Intro to Pottery', instructor: 'Sarah Chen', date: 'Mar 15, 10:00 AM', price: '$45', image: hobbyPottery },
+  { id: 2, title: 'Urban Foraging 101', instructor: 'Miles Green', date: 'Mar 16, 2:00 PM', price: '$30', image: hobbyForaging },
+  { id: 3, title: 'Birdwatching Basics', instructor: 'Dr. Ana Reyes', date: 'Mar 18, 8:00 AM', price: '$25', image: hobbyBirdwatching },
 ];
 
 export default function HomePage() {
@@ -72,7 +72,7 @@ export default function HomePage() {
             type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search hobbies, groups, or events..."
+            placeholder="Search classes, groups, instructors..."
             className="w-full h-10 sm:h-11 pl-9 pr-4 rounded-xl bg-muted text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             aria-label="Search hobbies"
           />
@@ -80,27 +80,25 @@ export default function HomePage() {
       </header>
 
       <div className="px-4 sm:px-6 pt-3 space-y-4 sm:space-y-5">
-        {/* Upcoming Events */}
-        <section aria-label="Upcoming events">
-          <h2 className="font-heading font-semibold text-sm sm:text-base text-foreground mb-2.5">Upcoming Events</h2>
+        {/* Upcoming Classes */}
+        <section aria-label="Upcoming classes">
+          <h2 className="font-heading font-semibold text-sm sm:text-base text-foreground mb-2.5">Upcoming Classes</h2>
           <div className="flex gap-2.5 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-hide">
-            {upcomingEvents.map((ev) => (
+            {upcomingClasses.map((cls) => (
               <div
-                key={ev.name}
-                className="flex-shrink-0 bg-card rounded-xl border border-border px-3.5 py-2.5 min-w-[160px] sm:min-w-[200px] cursor-pointer hover:shadow-sm transition-shadow"
-                onClick={() => {
-                  if (ev.isLive) {
-                    navigate('/live');
-                  } else {
-                    toast({ title: ev.name, description: `Starts ${ev.time}` });
-                  }
-                }}
+                key={cls.id}
+                className="flex-shrink-0 bg-card rounded-xl border border-border overflow-hidden min-w-[180px] sm:min-w-[220px] cursor-pointer hover:shadow-sm transition-shadow"
+                onClick={() => navigate(`/class/${cls.id}`)}
               >
-                <div className="flex items-center gap-1.5 mb-1">
-                  {ev.isLive && <span className="live-badge text-[9px] px-1.5 py-0">LIVE</span>}
-                  <span className="text-muted-foreground text-[10px] sm:text-[11px]">{ev.time}</span>
+                <img src={cls.image} alt={cls.title} className="w-full h-24 sm:h-28 object-cover" />
+                <div className="p-3">
+                  <p className="font-heading font-medium text-card-foreground text-xs sm:text-sm">{cls.title}</p>
+                  <p className="text-muted-foreground text-[10px] sm:text-xs mt-0.5">{cls.instructor}</p>
+                  <div className="flex items-center justify-between mt-2">
+                    <span className="text-muted-foreground text-[10px] sm:text-[11px]">{cls.date}</span>
+                    <span className="text-primary font-semibold text-[10px] sm:text-xs bg-primary/10 px-1.5 py-0.5 rounded">{cls.price}</span>
+                  </div>
                 </div>
-                <p className="font-heading font-medium text-card-foreground text-xs sm:text-sm">{ev.name}</p>
               </div>
             ))}
           </div>
@@ -111,7 +109,7 @@ export default function HomePage() {
           <h2 className="font-heading font-semibold text-sm sm:text-base text-foreground mb-2.5">Your Feed</h2>
           {filteredFeed.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-muted-foreground text-sm">No results for "{searchQuery}"</p>
+              <p className="text-muted-foreground text-sm">No results for &quot;{searchQuery}&quot;</p>
               <button onClick={() => setSearchQuery('')} className="text-primary text-xs font-medium mt-2">Clear search</button>
             </div>
           ) : (
@@ -142,10 +140,10 @@ export default function HomePage() {
               <Plus size={16} className="text-primary" /> New Group
             </button>
             <button
-              onClick={() => { setFabOpen(false); navigate('/live'); }}
+              onClick={() => { setFabOpen(false); navigate('/classes'); }}
               className="flex items-center gap-2 bg-card shadow-lg rounded-full px-4 py-2.5 text-sm font-medium text-foreground border border-border"
             >
-              <Video size={16} className="text-live" /> Go Live
+              <BookOpen size={16} className="text-primary" /> Browse Classes
             </button>
           </div>
         )}

@@ -3,38 +3,33 @@ import { Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
-import LiveBadge from './LiveBadge';
 import SponsoredBadge from './SponsoredBadge';
 
 interface HobbyCardProps {
+  id?: string;
   image: string;
   title: string;
   description: string;
   members: number;
-  isLive?: boolean;
-  viewers?: number;
   isSponsored?: boolean;
   sponsorName?: string;
   joined?: boolean;
 }
 
 const HobbyCard = React.forwardRef<HTMLElement, HobbyCardProps>(
-  ({ image, title, description, members, isLive, viewers, isSponsored, sponsorName, joined }, ref) => {
+  ({ id, image, title, description, members, isSponsored, sponsorName, joined }, ref) => {
     const navigate = useNavigate();
     const [isJoined, setIsJoined] = React.useState(joined ?? false);
 
+    const handleCardClick = () => {
+      if (id) navigate(`/group/${id}`);
+    };
+
     return (
-      <article ref={ref} className="hobby-card" aria-label={`${title} hobby group`}>
-        <div
-          className={`relative ${isLive ? 'cursor-pointer' : ''}`}
-          onClick={() => {
-            if (isLive) navigate('/live');
-          }}
-        >
+      <article ref={ref} className="hobby-card cursor-pointer" aria-label={`${title} hobby group`} onClick={handleCardClick}>
+        <div className="relative">
           <img src={image} alt={title} className="w-full h-36 sm:h-44 object-cover" loading="lazy" />
-          <div className="absolute top-2 left-2 flex gap-1.5">
-            {isLive && <LiveBadge viewers={viewers} />}
-          </div>
+          <div className="absolute top-2 left-2 flex gap-1.5" />
           {isSponsored && (
             <div className="absolute top-2 right-2">
               <SponsoredBadge />
@@ -56,7 +51,8 @@ const HobbyCard = React.forwardRef<HTMLElement, HobbyCardProps>(
               size="sm"
               variant={isJoined ? 'secondary' : 'default'}
               className="h-7 text-xs px-3 rounded-full"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setIsJoined(!isJoined);
                 toast({
                   title: isJoined ? `Left ${title}` : `Joined ${title}!`,

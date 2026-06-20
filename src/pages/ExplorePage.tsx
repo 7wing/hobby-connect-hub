@@ -1,11 +1,8 @@
 import { Search, MapPin, Grid3X3, List, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { toast } from '@/hooks/use-toast';
 import MobileLayout from '@/components/MobileLayout';
 import HobbyCard from '@/components/HobbyCard';
-import LiveBadge from '@/components/LiveBadge';
-import SponsoredBadge from '@/components/SponsoredBadge';
 import hobbyTrains from '@/assets/hobby-trains.jpg';
 import hobbyForaging from '@/assets/hobby-foraging.jpg';
 import hobbyTypewriters from '@/assets/hobby-typewriters.jpg';
@@ -13,29 +10,32 @@ import hobbyPottery from '@/assets/hobby-pottery.jpg';
 import hobbyBirdwatching from '@/assets/hobby-birdwatching.jpg';
 import hobbyStamps from '@/assets/hobby-stamps.jpg';
 
-const categories = ['All', 'Crafts', 'Outdoor', 'Collecting', 'Tech', 'Music', 'Art', 'Cooking'];
+const categories = ['All', 'Hiking', 'Birdwatching', 'Astronomy', 'Fishing', 'Trains', 'Architecture', 'Urban Exploration', 'Hunting'];
 
 const categoryMap: Record<string, string[]> = {
-  Crafts: ['Ceramic Arts Circle', 'Vintage Typewriters'],
-  Outdoor: ['Urban Foraging Network', 'Birdwatching Adventures'],
-  Collecting: ['Model Train Builders', 'Vintage Typewriters', 'Philately Society'],
-  Tech: ['Model Train Builders'],
-  Art: ['Ceramic Arts Circle'],
+  Hiking: ['Urban Foraging Network'],
+  Birdwatching: ['Birdwatching Adventures'],
+  Astronomy: [],
+  Fishing: [],
+  Trains: ['Model Train Builders'],
+  Architecture: [],
+  'Urban Exploration': ['Urban Foraging Network'],
+  Hunting: [],
 };
 
-const featuredSponsors = [
-  { name: 'TrainWorld Co.', tagline: 'Premium model train kits', image: hobbyTrains },
-  { name: 'ClayMaster', tagline: 'Artisan pottery tools', image: hobbyPottery },
-  { name: 'WildHarvest', tagline: 'Foraging field guides', image: hobbyForaging },
+const featuredInstructors = [
+  { name: 'Marcus Chen', specialty: 'Model Trains', image: hobbyTrains },
+  { name: 'Elena Rossi', specialty: 'Pottery & Ceramics', image: hobbyPottery },
+  { name: 'Sam Whitmore', specialty: 'Urban Foraging', image: hobbyForaging },
 ];
 
 const allHobbies = [
-  { image: hobbyTrains, title: 'Model Train Builders', description: 'Build miniature train landscapes', members: 2340, isLive: true, viewers: 128 },
-  { image: hobbyForaging, title: 'Urban Foraging Network', description: 'Find edible plants in the city', members: 1856 },
-  { image: hobbyTypewriters, title: 'Vintage Typewriters', description: 'Restore & collect typewriters', members: 978, isLive: true, viewers: 42 },
-  { image: hobbyPottery, title: 'Ceramic Arts Circle', description: 'Wheel-throwing & glazing', members: 3102 },
-  { image: hobbyBirdwatching, title: 'Birdwatching Adventures', description: 'Birding trails worldwide', members: 4521 },
-  { image: hobbyStamps, title: 'Philately Society', description: 'Trade rare stamps', members: 1234 },
+  { id: '1', image: hobbyTrains, title: 'Model Train Builders', description: 'Build miniature train landscapes', members: 2340 },
+  { id: '2', image: hobbyForaging, title: 'Urban Foraging Network', description: 'Find edible plants in the city', members: 1856 },
+  { id: '3', image: hobbyTypewriters, title: 'Vintage Typewriters', description: 'Restore & collect typewriters', members: 978 },
+  { id: '4', image: hobbyPottery, title: 'Ceramic Arts Circle', description: 'Wheel-throwing & glazing', members: 3102 },
+  { id: '5', image: hobbyBirdwatching, title: 'Birdwatching Adventures', description: 'Birding trails worldwide', members: 4521 },
+  { id: '6', image: hobbyStamps, title: 'Philately Society', description: 'Trade rare stamps', members: 1234 },
 ];
 
 export default function ExplorePage() {
@@ -90,7 +90,7 @@ export default function ExplorePage() {
             type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Discover niche hobbies..."
+            placeholder="Search classes, groups, instructors..."
             className="w-full h-10 sm:h-11 pl-9 pr-4 rounded-xl bg-muted text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             aria-label="Search hobbies"
           />
@@ -110,31 +110,28 @@ export default function ExplorePage() {
       </header>
 
       <div className="px-4 sm:px-6 pt-3 space-y-5">
-        {/* Featured Sponsors */}
-        <section aria-label="Featured sponsors">
+        {/* Featured Instructors */}
+        <section aria-label="Featured instructors">
           <div className="flex items-center justify-between mb-2.5">
-            <div className="flex items-center gap-2">
-              <h2 className="font-heading font-semibold text-sm sm:text-base text-foreground">Featured Sponsors</h2>
-              <SponsoredBadge />
-            </div>
+            <h2 className="font-heading font-semibold text-sm sm:text-base text-foreground">Featured Instructors</h2>
             <button
-              onClick={() => toast({ title: 'All Sponsors', description: 'Viewing all sponsor partners' })}
+              onClick={() => navigate('/search?tab=instructors')}
               className="text-primary text-xs font-medium flex items-center gap-0.5"
             >
               See all <ChevronRight size={12} />
             </button>
           </div>
           <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
-            {featuredSponsors.map((s) => (
+            {featuredInstructors.map((i) => (
               <div
-                key={s.name}
-                onClick={() => toast({ title: s.name, description: s.tagline })}
+                key={i.name}
+                onClick={() => navigate('/search?tab=instructors')}
                 className="flex-shrink-0 w-40 sm:w-48 bg-card rounded-xl border border-border overflow-hidden cursor-pointer hover:shadow-sm transition-shadow"
               >
-                <img src={s.image} alt={s.name} className="w-full h-20 sm:h-24 object-cover" loading="lazy" />
+                <img src={i.image} alt={i.name} className="w-full h-20 sm:h-24 object-cover" loading="lazy" />
                 <div className="p-2.5">
-                  <p className="font-heading font-semibold text-card-foreground text-xs sm:text-sm">{s.name}</p>
-                  <p className="text-muted-foreground text-[10px] sm:text-[11px] mt-0.5">{s.tagline}</p>
+                  <p className="font-heading font-semibold text-card-foreground text-xs sm:text-sm">{i.name}</p>
+                  <p className="text-muted-foreground text-[10px] sm:text-[11px] mt-0.5">{i.specialty}</p>
                 </div>
               </div>
             ))}
@@ -150,31 +147,6 @@ export default function ExplorePage() {
           </section>
         )}
 
-        {/* Live Now */}
-        <section aria-label="Live now">
-          <h2 className="font-heading font-semibold text-sm sm:text-base text-foreground mb-2.5">🔴 Live Now</h2>
-          <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
-            {allHobbies.filter(h => h.isLive).map((h) => (
-              <div
-                key={h.title}
-                onClick={() => navigate('/live')}
-                className="flex-shrink-0 w-52 sm:w-60 bg-card rounded-xl border border-border overflow-hidden relative cursor-pointer hover:shadow-md transition-shadow"
-              >
-                <div className="relative">
-                  <img src={h.image} alt={h.title} className="w-full h-28 sm:h-32 object-cover" loading="lazy" />
-                  <div className="absolute top-2 left-2">
-                    <LiveBadge viewers={h.viewers} />
-                  </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
-                </div>
-                <div className="p-2.5">
-                  <p className="font-heading font-semibold text-card-foreground text-xs sm:text-sm">{h.title}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
         {/* All Hobbies */}
         <section aria-label="Browse hobbies">
           <h2 className="font-heading font-semibold text-sm sm:text-base text-foreground mb-2.5">Browse Hobbies</h2>
@@ -189,11 +161,10 @@ export default function ExplorePage() {
                 <div
                   key={h.title}
                   className="hobby-card cursor-pointer"
-                  onClick={() => h.isLive ? navigate('/live') : toast({ title: h.title, description: `${h.members.toLocaleString()} members` })}
+                  onClick={() => navigate(`/group/${h.title.toLowerCase().replace(/\s+/g, '-')}`)}
                 >
                   <div className="relative">
                     <img src={h.image} alt={h.title} className="w-full h-24 sm:h-32 object-cover" loading="lazy" />
-                    {h.isLive && <div className="absolute top-1.5 left-1.5"><LiveBadge /></div>}
                   </div>
                   <div className="p-2.5">
                     <p className="font-heading font-semibold text-card-foreground text-xs sm:text-sm leading-tight">{h.title}</p>

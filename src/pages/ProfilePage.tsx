@@ -1,20 +1,20 @@
-import { Settings, Edit3, Video, LogOut, MapPin, Calendar, Activity, Award, Sun, Moon, Monitor, ChevronRight, Play } from 'lucide-react';
+import { Settings, Edit3, LogOut, MapPin, Calendar, Activity, Award, Sun, Moon, Monitor, ChevronRight, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 import MobileLayout from '@/components/MobileLayout';
 import SponsoredBadge from '@/components/SponsoredBadge';
 import { useTheme } from '@/hooks/useTheme';
-import hobbyTrains from '@/assets/hobby-trains.jpg';
-import hobbyPottery from '@/assets/hobby-pottery.jpg';
-import hobbyBirdwatching from '@/assets/hobby-birdwatching.jpg';
+
 
 const myHobbies = [
-  { name: 'Model Trains', emoji: '🚂' },
-  { name: 'Pottery', emoji: '🏺' },
+  { name: 'Hiking', emoji: '🥾' },
   { name: 'Birdwatching', emoji: '🐦' },
-  { name: 'Stamp Collecting', emoji: '📮' },
-  { name: 'Urban Foraging', emoji: '🌿' },
+  { name: 'Astronomy', emoji: '🔭' },
+  { name: 'Fishing', emoji: '🎣' },
+  { name: 'Model Trains', emoji: '🚂' },
+  { name: 'Architecture', emoji: '🏛️' },
+  { name: 'Urban Exploration', emoji: '🏙️' },
 ];
 
 const connections = [
@@ -26,10 +26,10 @@ const connections = [
   { name: 'Mark D.', initials: 'MD', online: false },
 ];
 
-const liveHistory = [
-  { title: 'Train Building Session #12', date: 'Mar 5, 2026', viewers: 234, duration: '1h 23m', image: hobbyTrains },
-  { title: 'Pottery Wheel Demo', date: 'Feb 28, 2026', viewers: 189, duration: '45m', image: hobbyPottery },
-  { title: 'Spring Bird Count', date: 'Feb 20, 2026', viewers: 567, duration: '2h 10m', image: hobbyBirdwatching },
+const classesAttended = [
+  { title: 'Intro to Hiking', instructor: 'Sarah M.', date: 'Mar 10, 2026' },
+  { title: 'Stargazing Basics', instructor: 'Dr. Patel', date: 'Feb 28, 2026' },
+  { title: 'Fly Fishing 101', instructor: 'Jake R.', date: 'Feb 15, 2026' },
 ];
 
 const sponsoredDeals = [
@@ -83,8 +83,8 @@ export default function ProfilePage() {
           >
             <Edit3 size={14} /> Edit Profile
           </Button>
-          <Button variant="outline" size="sm" className="flex-1 rounded-xl h-9 sm:h-10 gap-1.5" onClick={() => navigate('/live')}>
-            <Video size={14} /> Go Live
+          <Button variant="outline" size="sm" className="flex-1 rounded-xl h-9 sm:h-10 gap-1.5" onClick={() => navigate('/classes')}>
+            <Search size={14} /> Browse Classes
           </Button>
         </div>
 
@@ -92,7 +92,7 @@ export default function ProfilePage() {
           {[
             { label: 'Hobbies', value: '5', icon: Activity },
             { label: 'Connections', value: '48', icon: Award },
-            { label: 'Live Streams', value: '12', icon: Video },
+            { label: 'Classes Taken', value: '12', icon: Calendar },
           ].map((stat) => (
             <div key={stat.label} className="bg-card rounded-xl border border-border p-3 sm:p-4 text-center">
               <stat.icon size={16} className="mx-auto text-primary mb-1" />
@@ -163,26 +163,26 @@ export default function ProfilePage() {
           </div>
         </section>
 
-        <section aria-label="Live stream history">
-          <h3 className="font-heading font-semibold text-sm sm:text-base text-foreground mb-2">Live History</h3>
+        <section aria-label="Classes attended">
+          <h3 className="font-heading font-semibold text-sm sm:text-base text-foreground mb-2">Classes Attended</h3>
           <div className="space-y-2.5">
-            {liveHistory.map((stream) => (
+            {classesAttended.map((cls) => (
               <div
-                key={stream.title}
-                className="flex gap-3 bg-card rounded-xl border border-border p-2.5 sm:p-3 cursor-pointer hover:shadow-sm transition-shadow"
-                onClick={() => navigate('/live')}
+                key={cls.title}
+                className="flex items-center justify-between bg-card rounded-xl border border-border p-2.5 sm:p-3"
               >
-                <div className="relative w-20 sm:w-24 h-14 sm:h-16 rounded-lg overflow-hidden flex-shrink-0">
-                  <img src={stream.image} alt={stream.title} className="w-full h-full object-cover" loading="lazy" />
-                  <div className="absolute inset-0 bg-foreground/20 flex items-center justify-center">
-                    <Play size={16} className="text-card fill-card" />
-                  </div>
-                </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-heading font-medium text-card-foreground text-xs sm:text-sm truncate">{stream.title}</p>
-                  <p className="text-muted-foreground text-[10px] sm:text-[11px] mt-0.5">{stream.date} · {stream.duration}</p>
-                  <p className="text-muted-foreground text-[10px] sm:text-[11px]">{stream.viewers} viewers</p>
+                  <p className="font-heading font-medium text-card-foreground text-xs sm:text-sm truncate">{cls.title}</p>
+                  <p className="text-muted-foreground text-[10px] sm:text-[11px] mt-0.5">{cls.instructor} · {cls.date}</p>
                 </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="rounded-lg h-7 sm:h-8 text-[10px] sm:text-xs flex-shrink-0 ml-2"
+                  onClick={() => toast({ title: 'Leave Review', description: `Review for ${cls.title} coming soon!` })}
+                >
+                  Leave Review
+                </Button>
               </div>
             ))}
           </div>

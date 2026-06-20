@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, Phone, Video, Info, Send, Smile, Paperclip, Image, Radio, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Phone, Video, Info, Send, Smile, Paperclip, Image, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 import MobileLayout from '@/components/MobileLayout';
@@ -15,7 +15,7 @@ interface Message {
 
 const chatList = [
   { name: 'Sarah Mitchell', initials: 'SM', lastMessage: 'That train layout looks amazing! 🚂', time: '2m', unread: 2, online: true },
-  { name: 'Train Builders Group', initials: 'TB', lastMessage: 'Jake: Anyone joining the expo live stream?', time: '15m', unread: 5, online: false, isGroup: true, isLive: true },
+  { name: 'Train Builders Group', initials: 'TB', lastMessage: 'Jake: Anyone joining the expo live stream?', time: '15m', unread: 5, online: false, isGroup: true },
   { name: 'Priya Kumar', initials: 'PK', lastMessage: 'I found some great mushrooms today', time: '1h', unread: 0, online: true },
   { name: 'Pottery Circle', initials: 'PC', lastMessage: 'Workshop starts in 30 min!', time: '2h', unread: 0, online: false, isGroup: true },
   { name: 'Tom Wilson', initials: 'TW', lastMessage: 'Thanks for the stamp trade!', time: '3h', unread: 0, online: false },
@@ -140,14 +140,6 @@ export default function ChatPage() {
             <ChevronRight size={14} className="text-muted-foreground" />
           </div>
 
-          <div className="bg-primary/5 rounded-xl border border-primary/20 p-3 sm:p-4 text-center">
-            <Radio size={18} className="mx-auto text-primary mb-1" />
-            <p className="text-xs sm:text-sm font-heading font-semibold text-foreground">Start a group live stream?</p>
-            <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">Invite {activeChat} to watch or co-host</p>
-            <button onClick={() => navigate('/live')} className="mt-2 bg-primary text-primary-foreground px-4 py-1.5 rounded-full text-xs font-medium">
-              Go Live Together
-            </button>
-          </div>
         </div>
 
         <div className="sticky bottom-16 bg-background border-t border-border px-3 sm:px-5 py-2">
@@ -224,11 +216,6 @@ export default function ChatPage() {
                   <span className="text-primary font-heading font-semibold text-sm">{chat.initials}</span>
                 </div>
                 {chat.online && <div className="online-dot absolute -bottom-0.5 -right-0.5" />}
-                {chat.isLive && (
-                  <div className="absolute -top-1 -right-1">
-                    <span className="live-badge text-[7px] px-1 py-0">LIVE</span>
-                  </div>
-                )}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
